@@ -1,4 +1,4 @@
-CREATE DATABASE Online_Book_Store;
+CREATE DATABASE Online_Book_Storekk;
 
 
 
@@ -6,6 +6,11 @@ CREATE TABLE Authors (
     AuthorID INT PRIMARY KEY IDENTITY(1,1),
     AuthorName VARCHAR(255)
 );
+CREATE TABLE Genres (
+    GenreID INT PRIMARY KEY IDENTITY(1,1),
+    GenreName VARCHAR(255)
+);
+
 
 CREATE TABLE Books (
     BookID INT PRIMARY KEY IDENTITY(1,1),
@@ -13,7 +18,8 @@ CREATE TABLE Books (
     Price DECIMAL(10, 2),
     PublishedYear INT,
     Quantity INT,
-	Author_Id INT NOT NULL FOREIGN KEY REFERENCES Authors(AuthorID)
+	Author_Id INT NOT NULL FOREIGN KEY REFERENCES Authors(AuthorID),
+	Genre_Id INT NOT NULL FOREIGN KEY REFERENCES Genres(GenreID)
 );
 
 CREATE TABLE Customers (
@@ -36,10 +42,6 @@ CREATE TABLE OrderDetails (
     Book_Id INT NOT NULL FOREIGN KEY REFERENCES Books(BookID)
 );
 
-CREATE TABLE Genres (
-    GenreID INT PRIMARY KEY IDENTITY(1,1),
-    GenreName VARCHAR(255)
-);
 
 CREATE TABLE Reviews (
     ReviewID INT PRIMARY KEY IDENTITY(1,1),
@@ -63,6 +65,19 @@ CREATE TABLE Promotions (
     EndDate DATE,
     Book_Id INT NOT NULL FOREIGN KEY REFERENCES Books(BookID)
 );
+CREATE TABLE Coupons (
+    CouponID INT PRIMARY KEY IDENTITY(1,1),
+    CouponCode VARCHAR(50),
+    Discount DECIMAL(5, 2),
+    ExpirationDate DATE
+);
+
+CREATE TABLE OrderCoupons (
+    Order_Id INT NOT NULL FOREIGN KEY REFERENCES Orders(OrderID),
+    Coupon_Id INT NOT NULL FOREIGN KEY REFERENCES Coupons(CouponID),
+    PRIMARY KEY (Order_Id, Coupon_Id)
+);
+
 
 
 INSERT INTO Authors (AuthorName) VALUES 
@@ -202,7 +217,43 @@ INSERT INTO Promotions (Book_Id, Discount, StartDate, EndDate) VALUES
 (3, 0.12, '2024-07-10', '2024-07-20'), 
 (8, 0.2, '2024-08-01', '2024-08-15'),   
 (9, 0.15, '2024-08-10', '2024-08-30'),   
-(10, 0.1, '2024-09-01', '2024-09-30');  
+(10, 0.1, '2024-09-01', '2024-09-30'); 
+
+INSERT INTO Coupons (CouponCode, Discount, ExpirationDate) VALUES 
+('SUMMER20', 20.00, '2024-07-01'),   
+('WELCOME10', 10.00, '2024-08-01'), 
+('FALL15', 15.00, '2024-09-30'),     
+('HOLIDAY25', 25.00, '2024-12-31'),
+('SPRING5', 5.00, '2024-04-30'), 
+('NEWYEAR10', 10.00, '2025-01-01'), 
+('FLASHSALE30', 30.00, '2024-06-25'),
+('WINTER20', 20.00, '2025-02-28'), 
+('VIP40', 40.00, '2024-11-01'), 
+('BLACKFRIDAY50', 50.00, '2024-11-30');
+
+
+INSERT INTO OrderCoupons (Order_Id, Coupon_Id) VALUES 
+(1, 1),  -- Applying SUMMER20 to Order 1
+(1, 2),  -- Applying WELCOME10 to Order 1
+(2, 1),  -- Applying SUMMER20 to Order 2
+(2, 3),  -- Applying FALL15 to Order 2
+(3, 4),  -- Applying HOLIDAY25 to Order 3
+(3, 5),  -- Applying SPRING5 to Order 3
+(4, 6),  -- Applying NEWYEAR10 to Order 4
+(4, 7),  -- Applying FLASHSALE30 to Order 4
+(5, 8),  -- Applying WINTER20 to Order 5
+(5, 9),  -- Applying VIP40 to Order 5
+(6, 10), -- Applying BLACKFRIDAY50 to Order 6
+(6, 1),  -- Applying SUMMER20 to Order 6
+(7, 2),  -- Applying WELCOME10 to Order 7
+(7, 3),  -- Applying FALL15 to Order 7
+(8, 4),  -- Applying HOLIDAY25 to Order 8
+(8, 5),  -- Applying SPRING5 to Order 8
+(9, 6),  -- Applying NEWYEAR10 to Order 9
+(9, 7),  -- Applying FLASHSALE30 to Order 9
+(10, 8), -- Applying WINTER20 to Order 10
+(10, 9); -- Applying VIP40 to Order 10
+
 
 
 SELECT * FROM Promotions;
@@ -332,6 +383,45 @@ JOIN (
     FROM OrderDetails
     GROUP BY Book_Id
 ) AS NewQuantity ON Books.BookID = NewQuantity.Book_Id;
+
+
+SELECT SUM(Price) AS TotalPriceSum
+FROM Books;
+
+
+SELECT AVG(Price) AS AveragePrice
+FROM Books;
+
+
+                            --Check Applied Coupons for a Specific Order--
+SELECT 
+    Orders.OrderID, 
+    Orders.OrderDate, 
+    Coupons.CouponCode, 
+    Coupons.Discount
+FROM 
+    OrderCoupons
+JOIN 
+    Orders ON OrderCoupons.Order_Id = Orders.OrderID
+JOIN 
+    Coupons ON OrderCoupons.Coupon_Id = Coupons.CouponID
+WHERE 
+    Orders.OrderID = 1;
+
+
+
+	                              --Retrieve Orders with Applied Coupons--
+SELECT 
+    Orders.OrderID, 
+    Orders.OrderDate, 
+    Coupons.CouponCode, 
+    Coupons.Discount
+FROM 
+    OrderCoupons
+JOIN 
+    Orders ON OrderCoupons.Order_Id = Orders.OrderID
+JOIN 
+    Coupons ON OrderCoupons.Coupon_Id = Coupons.CouponID;
 
 
 
