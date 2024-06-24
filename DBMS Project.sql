@@ -1,4 +1,5 @@
-CREATE DATABASE Online_Book_Storekk;
+CREATE DATABASE Online_Book_Store_;
+USE Online_Book_Store_;
 
 
 
@@ -96,17 +97,19 @@ INSERT INTO Authors (AuthorName) VALUES
 SELECT * FROM Authors;
 
 
-INSERT INTO Books (Title, Author_Id, Price, PublishedYear, Quantity) VALUES 
-('Murder on the Orient Express', 1, 12.99, 1934, 15),
-('The Shining', 2, 11.49, 1977, 12),
-('To Kill a Mockingbird', 3, 9.89, 1960, 18),
-('The Great Gatsby', 4, 8.79, 1925, 20),
-('Wuthering Heights', 5, 7.99, 1847, 10),
-('Great Expectations', 6, 6.49, 1861, 25),
-('Pride and Prejudice', 7, 10.99, 1813, 22),
-('War and Peace', 8, 14.99, 1869, 30),
-('Adventures of Huckleberry Finn', 9, 5.99, 1884, 28),
-('The Hobbit', 10, 11.79, 1937, 15);
+INSERT INTO Books (Title, Price, PublishedYear, Quantity, Author_Id, Genre_Id)
+VALUES 
+('The Great Gatsby', 10.99, 1925, 50, 1, 1),
+('To Kill a Mockingbird', 7.99, 1960, 100, 2, 2),
+('1984', 8.99, 1949, 200, 3, 3),
+('Pride and Prejudice', 6.99, 1813, 150, 4, 4),
+('The Catcher in the Rye', 9.99, 1951, 80, 5, 5),
+('The Hobbit', 12.99, 1937, 70, 6, 6),
+('Fahrenheit 451', 7.49, 1953, 60, 7, 8),
+('Jane Eyre', 8.49, 1847, 90, 8, 7),
+('Moby-Dick', 11.99, 1851, 120, 9, 9),
+('War and Peace', 13.99, 1869, 30, 10, 10);
+
 
 SELECT * FROM Books;
 
@@ -144,13 +147,13 @@ SELECT * FROM Orders;
 
 
 INSERT INTO OrderDetails (Order_Id, Book_Id, Quantity) VALUES 
-(3, 2, 30),
+(3, 11, 30),
 (4, 4, 22),
-(5, 3, 25),
+(5, 12, 25),
 (6, 5, 50),
 (1, 6, 10),
 (2, 7, 25),
-(7, 7, 2),
+(7, 13, 2),
 (8, 8, 1),
 (9, 9, 3),
 (10, 10, 1);
@@ -180,9 +183,9 @@ INSERT INTO Reviews (Book_Id, Customer_Id, Rating, ReviewText) VALUES
 (5, 4, 5, 'Sei vai sei.'),
 (7, 5, 4, 'Enjoyed the characters.'),
 (6, 6, 5, 'A timeless classic.'),
-(2, 1, 4, 'Spine-chilling!'),
-(3, 2, 5, 'Heartwarming and thought-provoking.'),
-(1, 7, 4, 'Loved the romance plot.'),
+(11, 1, 4, 'Spine-chilling!'),
+(12, 2, 5, 'Heartwarming and thought-provoking.'),
+(13, 7, 4, 'Loved the romance plot.'),
 (8, 8, 4, 'Epic historical novel.'),
 (9, 9, 3, 'Interesting adventure story.'),
 (10, 10, 5, 'Magical journey!');
@@ -210,14 +213,17 @@ SELECT * FROM Payments;
 INSERT INTO Promotions (Book_Id, Discount, StartDate, EndDate) VALUES 
 (4, 0.15, '2024-05-01', '2024-05-15'), 
 (5, 0.1, '2024-05-10', '2024-06-10'),   
-(3, 0.2, '2024-05-15', '2024-06-15'),  
+(11, 0.2, '2024-05-15', '2024-06-15'),  
 (6, 0.25, '2024-06-01', '2024-06-30'), 
 (7, 0.1, '2024-06-05', '2024-06-30'), 
-(2, 0.15, '2024-07-01', '2024-07-31'), 
-(3, 0.12, '2024-07-10', '2024-07-20'), 
+(12, 0.15, '2024-07-01', '2024-07-31'), 
+(13, 0.12, '2024-07-10', '2024-07-20'), 
 (8, 0.2, '2024-08-01', '2024-08-15'),   
 (9, 0.15, '2024-08-10', '2024-08-30'),   
 (10, 0.1, '2024-09-01', '2024-09-30'); 
+
+SELECT * FROM Promotions;
+
 
 INSERT INTO Coupons (CouponCode, Discount, ExpirationDate) VALUES 
 ('SUMMER20', 20.00, '2024-07-01'),   
@@ -231,32 +237,36 @@ INSERT INTO Coupons (CouponCode, Discount, ExpirationDate) VALUES
 ('VIP40', 40.00, '2024-11-01'), 
 ('BLACKFRIDAY50', 50.00, '2024-11-30');
 
+SELECT * FROM Coupons;
+
+
 
 INSERT INTO OrderCoupons (Order_Id, Coupon_Id) VALUES 
-(1, 1),  -- Applying SUMMER20 to Order 1
-(1, 2),  -- Applying WELCOME10 to Order 1
-(2, 1),  -- Applying SUMMER20 to Order 2
-(2, 3),  -- Applying FALL15 to Order 2
-(3, 4),  -- Applying HOLIDAY25 to Order 3
-(3, 5),  -- Applying SPRING5 to Order 3
-(4, 6),  -- Applying NEWYEAR10 to Order 4
-(4, 7),  -- Applying FLASHSALE30 to Order 4
-(5, 8),  -- Applying WINTER20 to Order 5
-(5, 9),  -- Applying VIP40 to Order 5
-(6, 10), -- Applying BLACKFRIDAY50 to Order 6
-(6, 1),  -- Applying SUMMER20 to Order 6
-(7, 2),  -- Applying WELCOME10 to Order 7
-(7, 3),  -- Applying FALL15 to Order 7
-(8, 4),  -- Applying HOLIDAY25 to Order 8
-(8, 5),  -- Applying SPRING5 to Order 8
-(9, 6),  -- Applying NEWYEAR10 to Order 9
-(9, 7),  -- Applying FLASHSALE30 to Order 9
-(10, 8), -- Applying WINTER20 to Order 10
-(10, 9); -- Applying VIP40 to Order 10
+(1, 1),  
+(1, 2),  
+(2, 1), 
+(2, 3),
+(3, 4),
+(3, 5), 
+(4, 6),  
+(4, 7),  
+(5, 8), 
+(5, 9), 
+(6, 10), 
+(6, 1), 
+(7, 2),
+(7, 3), 
+(8, 4), 
+(8, 5), 
+(9, 6), 
+(9, 7), 
+(10, 8), 
+(10, 9);
 
 
+SELECT * FROM OrderCoupons;
 
-SELECT * FROM Promotions;
+
 
 SELECT * FROM Customers
 WHERE Email = 'Samiulhasan226@gmail.com';
